@@ -32,7 +32,15 @@ NLP_STOPWORDS_EN = os.path.join(
 
 DATA_DIRECTORY = '.newspaper_scraper'
 
-TOP_DIRECTORY = os.path.join(tempfile.gettempdir(), DATA_DIRECTORY)
+
+if 'NEWSPAPER_BASE_DIRECTORY' in os.environ:
+    # https://docs.aws.amazon.com/lambda/latest/dg/limits.html
+    # only /tmp is writeable in lambda
+    BASE_DIRECTORY = os.environ['NEWSPAPER_BASE_DIRECTORY']
+else:
+    BASE_DIRECTORY = tempfile.gettempdir()
+
+TOP_DIRECTORY = os.path.join(BASE_DIRECTORY, DATA_DIRECTORY)
 if not os.path.exists(TOP_DIRECTORY):
     os.mkdir(TOP_DIRECTORY)
 
